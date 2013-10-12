@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include <fstream>
+#include <iostream>
 #include "Chip8Machine.h"
 
 namespace CHIP8 {
@@ -35,8 +37,27 @@ namespace CHIP8 {
 		{
 			ucMem[ i ] = chip8_fontset[ i ];
 		}
+	}
 
-		// reset timer
-
+	void CHIP8Machine::LoadProgram( string f_strBin )
+	{
+		int nIter = 0;
+		try
+		{
+			ifstream myfile (f_strBin);
+			if( myfile.good() )
+			{
+				while( !myfile.eof() && ( 0x200 + nIter ) < CHIP8_MEM_SIZE )
+				{
+					myfile>>ucMem[ 0x200 + nIter ];
+					nIter++;
+				}
+			}
+			myfile.close();
+		}
+		catch( exception const& e )
+		{
+			cout << "There was an error: " << e.what() << endl;
+		}
 	}
 }
